@@ -11,7 +11,6 @@ use JSON::MaybeXS;
 use v5.014;
 
 my $url = URI->new( 'https://www.khanacademy.org/science/organic-chemistry' );
-#my $url = URI->new( 'https://www.khanacademy.org/science/organic-chemistry/gen-chem-review/electronegativity-polarity/v/electronegativity-and-chemical%20bonds' );
 
 my @queue;
 my $set_todo = Set::Scalar->new();
@@ -69,15 +68,9 @@ sub get_url {
 	$current_url;
 }
 
-sub crawl {
-	my ($site) = @_;
-}
-
 sub filter_url {
 	my ($site) = @_;
 	$site =~ /^\Q$url\E/         # is a child of URL
 		and $site !~ m,\/d$, # and is not a dicussion site
 		and $site !~ m,\#$,; # and is not a fragment
 }
-
-sub get_directory_for_video
