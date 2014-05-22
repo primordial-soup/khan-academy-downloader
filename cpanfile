@@ -4,3 +4,4 @@ requires 'URI';
 requires 'List::AllUtils';
 requires 'Path::Class';
 requires 'JSON::MaybeXS';
+requires 'String::ShellQuote';

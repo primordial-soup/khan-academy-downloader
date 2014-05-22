@@ -5,6 +5,9 @@ use warnings;
 use Path::Class;
 use JSON::MaybeXS;
 use URI;
+use String::ShellQuote;
+use IPC::Run3;
+use v5.014;
 
 my $url = URI->new( 'https://www.khanacademy.org/science/organic-chemistry' );
 
@@ -14,12 +17,24 @@ my $url_to_file = map_files();
 
 my @video_urls = grep { exists $data->{$_}{video} and not exists $data->{$_}{children} } keys $data;
 
+my $use_run3 = 0;
 for my $video_url (@video_urls) {
 	my $youtube_url = $data->{$video_url}{video};
 	my $file = $url_to_file->{$video_url};
 	$file->dir->mkpath;
-	my $ret = system('get_flash_videos', "-f",  "$file", "$youtube_url");
-	die "get_flash_videos failed on $youtube_url: $file" unless $ret == 0;
+
+	my $cmd = [ 'get_flash_videos', "-f",  "$file", "$youtube_url" ];
+	if( $use_run3 ) {
+		my $in = "n\n"; # say no to resuming
+		run3 $cmd, \$in, \my $out, \my $err;
+		print $out;
+		print $err;
+		my $ret = $?;
+		die "get_flash_videos failed on $youtube_url: $file" unless $ret == 0
+			or $err =~ /has been fully downloaded/s;
+	} else {
+		say shell_quote @$cmd;
+	}
 }
 
 sub map_files {
