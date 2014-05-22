@@ -1,2 +1,6 @@
 requires 'Web::Scraper';
-requires 'Scrappy';
+requires 'Set::Scalar';
+requires 'URI';
+requires 'List::AllUtils';
+requires 'Path::Class';
+requires 'JSON::MaybeXS';
