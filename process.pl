@@ -45,7 +45,7 @@ sub map_files {
 
 				if( $child =~ m,/v/, ) {
 					# a video -> goes in a file
-					$child_filename = $url_to_file{ $cur_url }->file( $name );
+					$child_filename = $url_to_file{ $cur_url }->file( "$name.mp4" );
 				} else {
 					# a subdir
 					$child_filename = $url_to_file{ $cur_url }->subdir( $name );
