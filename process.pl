@@ -9,7 +9,7 @@ use String::ShellQuote;
 use IPC::Run3;
 use v5.014;
 
-my $url = URI->new( 'https://www.khanacademy.org/science/organic-chemistry' );
+my $url = URI->new( $ARGV[0] // 'https://www.khanacademy.org/science/organic-chemistry' );
 
 my $data = decode_json( file('ka-data.json')->slurp );
 

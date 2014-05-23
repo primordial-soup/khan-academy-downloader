@@ -8,9 +8,10 @@ use URI;
 use List::AllUtils qw(uniq);
 use Path::Class;
 use JSON::MaybeXS;
+use Try::Tiny;
 use v5.014;
 
-my $url = URI->new( 'https://www.khanacademy.org/science/organic-chemistry' );
+my $url = URI->new( $ARGV[0] // 'https://www.khanacademy.org/science/organic-chemistry' );
 
 my @queue;
 my $set_todo = Set::Scalar->new();
@@ -23,10 +24,21 @@ my $scraper = scraper {
 };
 
 add_url( $url->as_string );
-while( @queue ) {
+URL: while( @queue ) {
 	my $current_url = get_url();
 	say $current_url;
-	my $cur_data = $scraper->scrape( URI->new($current_url) );
+	my $cur_data;
+	try {
+		$cur_data = $scraper->scrape( URI->new($current_url) );
+	} catch {
+		my $error = $_;
+		if( $error =~ /404 Not Found/) {
+			mark_done($current_url);
+			next URL;
+		}
+		# otherwise
+		die "Error: $error";
+	};
 	#use DDP; p $cur_data;
 
 	my @urls_to_try = uniq
